@@ -21,7 +21,7 @@
 @section('content')
 <div class="ui inverted vertical masthead center align segment">
     <div class="ui text container">
-        <img class="ui centered medium image" src="{{ asset('storage/image/icon/icon2.png') }}">
+        <img class="ui centered medium image" src="{{ asset('image/icon/icon2.png') }}">
         <h2 class="ui inverted center align header">
             @lang('messages.moto1')
         </h2>

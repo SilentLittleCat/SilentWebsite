@@ -11,7 +11,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <link rel="icon" href="{{ asset('storage/image/icon/icon.png') }}">
+    <link rel="icon" href="{{ asset('image/icon/icon.png') }}">
 
     <!-- Styles -->
     <!-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> -->
@@ -52,13 +52,13 @@
                 <div class="ui large secondary inverted menu">
                     <div class="left item">
                         <a href="{{ url('/home') }}">
-                            <img class="ui image" src="{{ url('storage/image/icon/icon1.png') }}">
+                            <img class="ui image" src="{{ url('image/icon/icon1.png') }}">
                         </a>
                     </div>
                     @if(Auth::check())
                         <div class="right item">
                             <div class="ui fluid pointing dropdown">
-                                <img class="ui circular centered image" src="{{ url($avatar) }}">
+                                <img class="ui circular centered image" src="{{ url(Auth::user()->poster ?: \App\User::$defaultAvatar) }}">
                                 <div class="menu">
                                     <a class="item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="font-size: 0.2em">
                                         <i class="sign out icon"></i>@lang('messages.logout')

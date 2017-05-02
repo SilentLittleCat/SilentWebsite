@@ -28,9 +28,9 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    protected static $defaultAvatar = 'storage/image/avatar/avatar.jpg';
-    protected static $defaultAvatarBack = 'storage/image/avatar/avatar2.jpg';
-    protected static $defaultMoto = 'If god exists, why does he always keep silent?';
+    public static $defaultAvatar = 'image/avatar/avatar.jpg';
+    public static $defaultAvatarBack = 'image/avatar/avatar2.jpg';
+    public static $defaultMoto = 'If god exists, why does he always keep silent?';
 
     protected static function getUserInfo($id)
     {

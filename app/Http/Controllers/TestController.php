@@ -6,14 +6,14 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Models\Movie;
 use Debugbar;
-use Storage;
+use Storage, Auth;
 
 class TestController extends Controller
 {
     public function test()
     {
     	$info = Movie::where('id', [1, 2, 3])->get();
-    	Debugbar::info($info);
+    	Debugbar::info(\App\User::$defaultAvatar);
     	return 'nihoa';
     }
 }

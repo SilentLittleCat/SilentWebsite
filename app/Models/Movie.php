@@ -20,7 +20,7 @@ class Movie extends Model
 
     public static $poster_path = 'public/image/movie';
     public static $poster_extension = ['jpeg', 'jpg', 'png'];
-    public static $default_poster = 'storage/image/movie/no-poster.jpg';
+    public static $default_poster = 'image/movie/no-poster.jpg';
 
     protected static function getMoviesByUserId($id)
     {

@@ -3,7 +3,7 @@
 @section('style')
 <style type="text/css">
 	body {
-		background-image: url('../../storage/image/bg/bg.jpg');
+		background-image: url('../../image/bg/bg.jpg');
 		background-repeat: repeat-y;
 		background-size: 100%;
 		background-attachment: fixed;
@@ -374,7 +374,10 @@
 	});
 
 	$('.ui.movie-search.dimmer').on('click', '.ui.search', function(event) {
-		event.stopPropagation();
+		event.stopImmediatePropagation();
+		console.log('1');
+	}).on('click', function(event) {
+		$('.ui.movie-search.dimmer').dimmer('hide');
 	});
 </script>
 @endsection
