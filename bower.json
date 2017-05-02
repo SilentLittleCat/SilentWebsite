@@ -1,0 +1,23 @@
+{
+  "name": "SilentWebsite",
+  "description": "",
+  "main": "",
+  "authors": [
+    "silent <13438082119@163.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/SilentLittleCat/SilentWebsite",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "semantic": "semantic-ui#^2.2.10",
+    "jquery.scrollTo": "^2.1.2",
+    "cropperjs": "^0.8.1"
+  }
+}
