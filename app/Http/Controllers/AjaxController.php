@@ -48,24 +48,4 @@ class AjaxController extends Controller
             return response()->json($result, 200);
         }
     }
-
-    public function searchMovie(Request $request)
-    {
-        if(!$request->has('id') || !$request->has('key'))
-        {
-            return response()->json(array(), 200);
-        }
-
-        $this->movie_ids = array();
-        DB::table('movie_user')->where('user_id', $request->id)->get()->each(function($item, $key) {
-            array_push($this->movie_ids, $item->movie_id);
-        });
-        $result = DB::table('movies')->select(['id', 'name', 'description'])->whereIn('id', $this->movie_ids)->where('name', 'like', '%' . $request->key . '%')->get();
-        foreach($result as $item)
-        {
-            $item->url = route('movies.show', ['id' => $request->id, 'movie_id' => $item->id]);
-        }
-
-        return response()->json(array('items' => $result), 200);
-    }
 }

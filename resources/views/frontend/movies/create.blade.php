@@ -58,7 +58,7 @@
 
 		<div class="ui movie divider"></div>
 
-	{!! Form::open(['url' => route('movies.store', ['id' => $id]), 'method' => 'post', 'class' => 'ui centered form grid', 'id' => 'movie_form', 'files' => true]) !!}
+	{!! Form::open(['url' => route('movies.store', ['id' => $user->id]), 'method' => 'post', 'class' => 'ui centered form grid', 'id' => 'movie_form', 'files' => true]) !!}
 	{{ Form::token() }}
 
 		<div class="row field">
@@ -119,7 +119,7 @@
 		<div class="row field">
 			<div class="ui primary submit button">Submit</div>
 			<div class="ui button">
-				<a href="{{ route('movies.index', ['id' => $id]) }}">Cancel</a>
+				<a href="{{ route('movies.index', ['id' => $user->id]) }}">Cancel</a>
 			</div>
 		</div>
 	{!! Form::close() !!}
@@ -133,7 +133,7 @@
 	</div>
 </div>
 <div class="movie-kit">
-	<a href="{{ route('movies.index', ['id' => $id]) }}">
+	<a href="{{ route('movies.index', ['id' => $user->id]) }}">
 		<i class="circular inverted red big home icon"></i>
 	</a>
 </div>

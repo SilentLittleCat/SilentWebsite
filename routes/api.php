@@ -20,7 +20,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['as' => 'api.'], function () {
 
 	Route::post('/cropper-movie-poster', ['as' => 'ajax.crop-movie-poster', 'uses' => 'AjaxController@cropMoviePoster']);
-
-	Route::get('/search-movie', ['as' => 'search.movie', 'uses' => 'AjaxController@searchMovie']);
-	Route::get('/search-code', ['as' => 'search.code', 'uses' => 'AjaxController@searchCode']);
 });

@@ -58,31 +58,31 @@
 
 		<div class="ui movie divider"></div>
 
-	{!! Form::open(['url' => route('movies.update', ['id' => $id, 'movie_id' => $movie[0]->id]), 'method' => 'put', 'class' => 'ui centered form grid', 'id' => 'movie_form', 'files' => true]) !!}
+	{!! Form::open(['url' => route('movies.update', ['id' => $user->id, 'movie_id' => $movie->id]), 'method' => 'put', 'class' => 'ui centered form grid', 'id' => 'movie_form', 'files' => true]) !!}
 	{{ Form::token() }}
 
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Name:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<input type="text" name="name" placeholder="Input the movie name" value="{{ $movie[0]->name }}">
+				<input type="text" name="name" placeholder="Input the movie name" value="{{ $movie->name }}">
 			</div>
 		</div>
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Director:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<input type="text" name="director" placeholder="Input the movie's director" value="{{ $movie[0]->director }}">
+				<input type="text" name="director" placeholder="Input the movie's director" value="{{ $movie->director }}">
 			</div>
 		</div>
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Actors:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<input type="text" name="actors" placeholder="Input movie's actors" value="{{ $movie[0]->actors }}">
+				<input type="text" name="actors" placeholder="Input movie's actors" value="{{ $movie->actors }}">
 			</div>
 		</div>
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Poster:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<input type="file" name="poster" id="poster" onchange="return moviePosterUpdate();" value="{{ $movie[0]->poster }}">
+				<input type="file" name="poster" id="poster" onchange="return moviePosterUpdate();" value="{{ $movie->poster }}">
 				<input type="hidden" name="crop-poster" id="crop-poster">
 			</div>
 		</div>
@@ -90,8 +90,8 @@
 			<label class="right floated right aligned two wide column">Preview:</label>
 			<div class="left floated left aligned fourteen wide column">
 				<div class="ui padded center aligned segment" id="previewImage">
-					@if(isset($movie[0]->poster) and !is_null($movie[0]->poster))
-					<img src="{{ url($movie[0]->poster) }}" class="ui centered image">
+					@if(isset($movie->poster) and !is_null($movie->poster))
+					<img src="{{ url($movie->poster) }}" class="ui centered image">
 					@endif
 				</div>
 			</div>
@@ -99,31 +99,31 @@
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Description:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<textarea rows="3" name="description" placeholder="Input a movie description">{{ $movie[0]->description }}</textarea>
+				<textarea rows="3" name="description" placeholder="Input a movie description">{{ $movie->description }}</textarea>
 			</div>
 		</div>
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Recommend:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<textarea rows="3" name="recommend" placeholder="Input a movie recommend">{{ $movie[0]->recommend }}</textarea>
+				<textarea rows="3" name="recommend" placeholder="Input a movie recommend">{{ $movie->recommend }}</textarea>
 			</div>
 		</div>
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Ranking:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<input type="number" name="ranking" placeholder="Input a movie ranking" value="{{ $movie[0]->ranking }}">
+				<input type="number" name="ranking" placeholder="Input a movie ranking" value="{{ $movie->ranking }}">
 			</div>
 		</div>
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Stars:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<input type="number" name="stars" class="column" placeholder="Input a movie stars" value="{{ $movie[0]->stars }}">
+				<input type="number" name="stars" class="column" placeholder="Input a movie stars" value="{{ $movie->stars }}">
 			</div>
 		</div>
 		<div class="row field">
 			<div class="ui primary submit button">Submit</div>
 			<div class="ui button">
-				<a href="{{ route('movies.index', ['id' => $id]) }}">Cancel</a>
+				<a href="{{ route('movies.index', ['id' => $user->id]) }}">Cancel</a>
 			</div>
 		</div>
 	{!! Form::close() !!}
@@ -137,7 +137,7 @@
 	</div>
 </div>
 <div class="movie-kit">
-	<a href="{{ route('movies.index', ['id' => $id]) }}">
+	<a href="{{ route('movies.index', ['id' => $user->id]) }}">
 		<i class="circular inverted red big home icon"></i>
 	</a>
 </div>
@@ -149,15 +149,17 @@
 	$('#test').bind('onchange', function() {
 		console.log('niha');
 	});
+	
 	function moviePosterUpdate()
 	{
 		var $this = $(event.target);
 		var $parent = $this.closest('.field');
-		var path = "{{ route('ajax.crop-movie-poster') }}";
+		var path = "{{ route('api.ajax.crop-movie-poster') }}";
 
 		var formData = new FormData();
 		var poster = $('#poster')[0].files[0];
 		formData.append('poster', poster);
+		formData.append('path', $('#crop-poster').val());
 
 		$parent.removeClass('error');
       	$parent.children('.ui.red.prompt.label').remove();

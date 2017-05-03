@@ -16,7 +16,6 @@ class MoviesTableSeeder extends Seeder
     public function run()
     {
         DB::table('movies')->truncate();
-        DB::table('movie_user')->truncate();
 
         $faker = \Faker\Factory::create('zh_CN');
 
@@ -27,19 +26,16 @@ class MoviesTableSeeder extends Seeder
         	for($i = 0; $i < 20; ++$i)
         	{
 	            $movie = Movie::create([
+                    'user_id' => $user->id,
 	                'name'   => $faker->text(30),
 	                'director' => $faker->name,
 	                'actors' => implode(',', array($faker->name, $faker->name, $faker->name)),
+                    'poster' => env('DEFAULT_MOVIE_POSTER'),
 	                'description' => $faker->text(100),
 	                'recommend' => $faker->text(50),
 	                'ranking' => $faker->numberBetween(1, 10000),
 	                'stars' => $faker->randomFloat(1, 0, 9.9)
 	            ]);
-
-	        	DB::table('movie_user')->insert([
-	        		'user_id' => $user->id,
-	        		'movie_id' => $movie->id
-	        	]);
         	}
         }
     }

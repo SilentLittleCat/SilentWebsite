@@ -18,8 +18,14 @@ class MovieController extends Controller
      */
     public function index(Request $request, $id)
     {
-        $info = User::getUserInfo($id);
-        $movies = Movie::getMoviesByUserId($id);
+        $info = array('user' => User::find($id));
+        $movies = Movie::where('user_id', $id)->paginate(Movie::$movie_of_each_page);
+
+        if($movies->count() == 0)
+        {
+            $movies = Movie::where('user_id', $id)->paginate(Movie::$movie_of_each_page, ['*'], 'page', $movies->lastPage());
+        }
+
         $info = array_merge(array('movies' => $movies), $info);
 
         if($request->has('style') && in_array($request->input('style'), Movie::$display_styles))
@@ -41,10 +47,11 @@ class MovieController extends Controller
      */
     public function create(Request $request, $id)
     {
-        $info = User::getUserInfo($id);
-        if($info['is_admin'])
+        if(Auth::user()->id == $id)
         {
-            return view('frontend.movies.create', $info);
+            return view('frontend.movies.create', [
+                'user' => User::find($id)
+            ]);
         }
         else
         {
@@ -61,6 +68,7 @@ class MovieController extends Controller
     public function store(Request $request, $id)
     {
         $movie = new Movie;
+        $movie->user_id = $id;
         $movie->name = $request->name;
         $movie->director = $request->director;
         $movie->actors = $request->actor;
@@ -76,14 +84,9 @@ class MovieController extends Controller
                 $movie->poster = $request->input('crop-poster');
             }
         }
-        $movie_id = $movie->save();
+
+        $movie->save();
         $movie_id = $movie->id;
-        DB::transaction(function() use($id, $movie_id){
-            DB::table('movie_user')->insert([
-                'user_id' => $id,
-                'movie_id' => $movie_id
-            ]);
-        });
         return redirect()->route('movies.show', ['id' => $id, 'movie_id' => $movie_id]);
     }
 
@@ -93,15 +96,12 @@ class MovieController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, $movie_id)
+    public function show(Request $request, $id, $movie_id)
     {
-        $info = User::getUserInfo($id);
-        $movie = Movie::where('id', $movie_id)->first();
-        
-        $movie->poster = $movie->poster ?: Movie::$default_poster;
-
-        $info = array_merge(array('movie' => $movie), $info);
-        return view('frontend.movies.show', $info);
+        return view('frontend.movies.show', [
+            'user' => User::find($id),
+            'movie' => Movie::where('id', $movie_id)->first()
+        ]);
     }
 
     /**
@@ -112,10 +112,10 @@ class MovieController extends Controller
      */
     public function edit($id, $movie_id)
     {
-        $info = User::getUserInfo($id);
-        $movie = Movie::where('id', $movie_id)->get();
-        $info = array_merge(array('movie' => $movie), $info);
-        return view('frontend.movies.edit', $info);
+        return view('frontend.movies.edit', [
+            'user' => User::find($id),
+            'movie' => Movie::where('id', $movie_id)->first()
+        ]);
     }
 
     /**
@@ -147,13 +147,8 @@ class MovieController extends Controller
             }
             $movie_id = $movie->save();
             $movie_id = $movie->id;
-            DB::transaction(function() use($id, $movie_id){
-                DB::table('movie_user')->insert([
-                    'user_id' => $id,
-                    'movie_id' => $movie_id
-                ]);
-            });
-            return redirect()->route('movies.store', ['id' => $id]);
+
+            return redirect()->route('movies.show', ['id' => $id, 'movie_id' => $movie_id]);
         }
         return redirect()->back()->withInput();
     }
@@ -166,15 +161,29 @@ class MovieController extends Controller
      */
     public function destroy($id, $movie_id)
     {
-        $poster = Movie::where('id', $movie_id)->first()->poster;
-        $path = 'public' . substr($poster, 7);
-        Storage::delete($path);
-
-        DB::transaction(function() use($movie_id) {
-            Movie::where('id', $movie_id)->delete();
-            DB::table('movie_user')->where('movie_id', $movie_id)->delete();
-        });
-
+        $movie = Movie::where('id', $movie_id)->first();
+        if(!is_null($movie->poster) && Storage::exists('public' . substr($movie->poster, 7)))
+        {
+            Storage::delete('public' . substr($movie->poster, 7));
+        }
+        $movie->delete();
         return back();
+    }
+
+    public function searchMovie(Request $request, $id)
+    {
+        if(!$request->has('key'))
+        {
+            return response()->json(array(), 200);
+        }
+        
+        $movies = Movie::select(['id', 'name', 'description'])->where('user_id', $id)->where('name', 'like', '%' . $request->key . '%')->get();
+
+        foreach($movies as $movie)
+        {
+            $movie->url = route('movies.show', ['id' => $id, 'movie_id' => $movie->id]);
+        }
+
+        return response()->json(array('items' => $movies), 200);
     }
 }

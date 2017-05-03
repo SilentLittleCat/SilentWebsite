@@ -28,7 +28,11 @@
             </div>
             <select class="ui compact dropdown">
                 @for($i = 1; $i <= $paginator->lastPage(); ++$i)
+                    @if($paginator->currentPage() == $i)
+                    <option value="{{ $i }}" selected="selected">{{ $i }}</option>
+                    @else
                     <option value="{{ $i }}">{{ $i }}</option>
+                    @endif
                 @endfor
             </select>
             <div class="ui paginator button">Go!</div>

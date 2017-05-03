@@ -26,9 +26,10 @@ Route::group(['namespace' => 'Frontend'], function ()
     	Route::get('/', ['as' => 'welcome', 'uses' => 'UserController@index']);
 
     	Route::resource('/movies', 'MovieController');
-    	Route::post('/movies/ajax', 'MovieController@ajax');
+    	Route::get('/search-movie', ['as' => 'movies.search', 'uses' => 'MovieController@searchMovie']);
     	
         Route::resource('/codes', 'CodeController');
+        Route::get('/search-code', ['as' => 'codes.search', 'uses' => 'CodeController@searchCode']);
     }); 
 });
 

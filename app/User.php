@@ -28,34 +28,8 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public static $defaultAvatar = 'image/avatar/avatar.jpg';
-    public static $defaultAvatarBack = 'image/avatar/avatar2.jpg';
-    public static $defaultMoto = 'If god exists, why does he always keep silent?';
-
-    protected static function getUserInfo($id)
+    public function movies()
     {
-        $user = static::find($id);
-
-        $is_admin = (Auth::check() && (Auth::user()->id == $user->id)) ?: false;
-        $avatar = Auth::check() ? (Auth::user()->avatar ?: static::$defaultAvatar) : '';
-        $user_avatar = $user->avatar ?: static::$defaultAvatar;
-        $user_avatar_back = $user->avatar_back ?: static::$defaultAvatarBack;
-        $moto = $user->moto ?: static::$defaultMoto;
-
-        return [
-            'id' => $id,
-            'is_admin' => $is_admin,
-            'avatar' => $avatar,
-            'user_avatar' => $user_avatar,
-            'user_avatar_back' => $user_avatar_back,
-            'moto' => $moto
-        ];
-    }
-
-    protected static function userExist($id)
-    {
-        if(static::find($id)) return true;
-
-        return false;
+        return $this->hasMany('App\Models\Movie');
     }
 }

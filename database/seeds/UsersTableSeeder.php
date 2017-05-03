@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Storage;
 
 class UsersTableSeeder extends Seeder
 {
-	protected $defaultAvatar = 'public/image/avatar/';
     /**
      * Run the database seeds.
      *
@@ -21,15 +20,17 @@ class UsersTableSeeder extends Seeder
             'name'   => 'admin',
             'email' => 'admin@test.com',
             'password' => bcrypt(123456),
-            'status' => 1
+            'status' => 1,
+            'moto' => env('DEFAULT_MOTO'),
+            'avatar' => env('DEFAULT_AVATAR'),
+            'avatar_back' => env('DEFAULT_AVATAR_BACK'),
         ]);
 
         $faker = Faker\Factory::create('zh_CN');
 
-        $avatars = Storage::files($this->defaultAvatar);
         for ($i = 0; $i < 20; ++$i) {
-        	$avatar = 'storage' . substr($avatars[array_rand($avatars, 1)], 6);
-        	$avatar_back = 'storage' . substr($avatars[array_rand($avatars, 1)], 6);
+        	$avatar = env('DEFAULT_AVATAR_PATH') . 'avatar' . rand(1, 6) . '.png';
+        	$avatar_back = env('DEFAULT_AVATAR_PATH') . 'avatar' . rand(1, 6) . '.png';
             $user = User::create([
                 'name'   => $faker->name,
                 'email' => $faker->email,

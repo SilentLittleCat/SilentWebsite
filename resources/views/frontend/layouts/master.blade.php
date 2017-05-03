@@ -58,7 +58,7 @@
                     @if(Auth::check())
                         <div class="right item">
                             <div class="ui fluid pointing dropdown">
-                                <img class="ui circular centered image" src="{{ url(Auth::user()->poster ?: \App\User::$defaultAvatar) }}">
+                                <img class="ui circular centered image" src="{{ url(Auth::user()->avatar) }}">
                                 <div class="menu">
                                     <a class="item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="font-size: 0.2em">
                                         <i class="sign out icon"></i>@lang('messages.logout')

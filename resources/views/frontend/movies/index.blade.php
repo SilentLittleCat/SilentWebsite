@@ -47,12 +47,12 @@
 		cursor: default;
 	}
 	.ui.maximize.shape img {
-		width: 80%;
 		height: auto;
+		width: 100%;
 	}
 	.ui.maximize.dimmer .ui.buttons {
 		margin-top: 20px;
-		width: 40%;
+		width: 300px;
 	}
 	.ui.movie-search.dimmer .ui.search input {
 		width: 800px;
@@ -70,9 +70,9 @@
 <div class="movie-content">
 	<div class="ui container">
 		<div class="movie-header">
-			<img class="ui small circular centered image" src="{{ url($user_avatar) }}">
+			<img class="ui small circular centered image" src="{{ url($user->avatar) }}">
 		</div>
-		<div class="ui horizontal divider">SilentGod's Movies</div>
+		<div class="ui horizontal divider">{{ $user->name . "'s movies" }}</div>
 		@if($style == 'grid')
 		<div class="movie-cards">
 			<div class="ui three stackable link cards">
@@ -80,11 +80,11 @@
 				<div class="card">
 					<div class="blurring dimmable image">
 						<div class="ui dimmer">
-							@if($is_admin)
+							@if(Auth::user()->id == $user->id)
 							<div class="content">
 								<div class="center">
 									<div class="ui inverted edit button">
-										<a href="{{ route('movies.edit', ['id' => $id, 'movie_id' => $movie->id]) }}">Edit</a>
+										<a href="{{ route('movies.edit', ['id' => $user->id, 'movie_id' => $movie->id]) }}">Edit</a>
 									</div>
 									<input class="movie-hidden-name" type="hidden" value="{{ $movie->name }}">
 									<input class="movie-hidden-id" type="hidden" value="{{ $movie->id }}">
@@ -142,7 +142,7 @@
 						<div class="ui center aligned grid">
 							<div class="row">
 								<div class="column">
-									<a href="{{ route('movies.show', ['id' => $id, 'movie_id' => $movie->id]) }}">
+									<a href="{{ route('movies.show', ['id' => $user->id, 'movie_id' => $movie->id]) }}">
 										{{ $movie->name }}
 									</a>
 								</div>
@@ -181,7 +181,7 @@
 						<th>Actors</th>
 						<th>Ranking</th>
 						<th>Stars</th>
-						@if($is_admin)
+						@if(Auth::user()->id == $user->id)
 						<th>Operation</th>
 						@endif
 					</tr>
@@ -189,7 +189,7 @@
 						@foreach($movies as $movie)
 						<tr>
 							<td class="movie-table-name">
-								<a href="{{ route('movies.show', ['id' => $id, 'movie_id' => $movie->id]) }}">
+								<a href="{{ route('movies.show', ['id' => $user->id, 'movie_id' => $movie->id]) }}">
 										{{ $movie->name }}
 								</a>
 							</td>
@@ -197,9 +197,9 @@
 							<td>{{ $movie->actors }}</td>
 							<td>{{ $movie->ranking }}</td>
 							<td>{{ $movie->stars }}</td>
-							@if($is_admin)
+							@if(Auth::user()->id == $user->id)
 							<td>
-								<a href="{{ route('movies.edit', ['id' => $id, 'movie_id' => $movie->id]) }}">Edit</a>
+								<a href="{{ route('movies.edit', ['id' => $user->id, 'movie_id' => $movie->id]) }}">Edit</a>
 								<span>|</span>
 								<a href="" class="delete-movie">Delete</a>
 								{!! Form::open(['url' => url()->current() . '/' . $movie->id, 'method' => 'delete']) !!}
@@ -228,28 +228,34 @@
 <div class="ui maximize page dimmer">
 	<div class="content">
 		<div class="center">
-			<div class="ui maximize shape">
-				<div class="sides">
-					@foreach($movies as $movie)
-					<div class="{{ $loop->first ? 'active' : '' }} side">
-						<div class="content">
-							<div class="image">
-								<img src="{{ url($movie->poster) }}">
+			<div class="ui one column centered gird">
+				<div class="column">
+					<div class="ui maximize shape">
+						<div class="sides">
+							@foreach($movies as $movie)
+							<div class="{{ $loop->first ? 'active' : '' }} side">
+								<div class="content">
+									<div class="ui huge image">
+										<img src="{{ url($movie->poster) }}">
+									</div>
+								</div>
 							</div>
+							@endforeach
 						</div>
 					</div>
-					@endforeach
 				</div>
-			</div>
-			<div class="ui icon large buttons">
-				<div class="ui left button">
-					<i class="chevron circle left icon"></i>
-				</div>
-				<div class="ui red close button">
-					<i class="close icon"></i>
-				</div>
-				<div class="ui right button">
-					<i class="chevron circle right icon"></i>
+				<div class="column">
+					<div class="ui icon large buttons">
+						<div class="ui left button">
+							<i class="chevron circle left icon"></i>
+						</div>
+						<div class="ui red close button">
+							<i class="close icon"></i>
+						</div>
+						<div class="ui right button">
+							<i class="chevron circle right icon"></i>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -275,21 +281,21 @@
 			<div class="go-up item" data-tooltip="Go to top!" data-inverted="" data-position="left center">
 				<i class="chevron up icon"></i>
 			</div>
-			@if($is_admin)
+			@if(Auth::user()->id == $user->id)
 			<div class="add item" data-inverted="" data-tooltip="Add your movie" data-position="left center">
 				<i class="plus icon"></i>
 			</div>
 			@endif
-			<a class="grid-layout {{ $style == 'grid' ? 'link-diabled' : '' }} item" data-inverted="" data-tooltip="Grid layout" data-position="left center" href="{{ route('movies.index', ['id' => $id, 'style' => 'grid']) }}">
+			<a class="grid-layout {{ $style == 'grid' ? 'link-diabled' : '' }} item" data-inverted="" data-tooltip="Grid layout" data-position="left center" href="{{ route('movies.index', ['id' => $user->id, 'style' => 'grid']) }}">
 				<i class="grid layout icon"></i>
 			</a>
-			<a class="list-layout {{ $style == 'list' ? 'link-diabled' : '' }} item" data-inverted="" data-tooltip="List layout" data-position="left center" href="{{ route('movies.index', ['id' => $id, 'style' => 'list']) }}">
+			<a class="list-layout {{ $style == 'list' ? 'link-diabled' : '' }} item" data-inverted="" data-tooltip="List layout" data-position="left center" href="{{ route('movies.index', ['id' => $user->id, 'style' => 'list']) }}">
 				<i class="list layout icon"></i>
 			</a>
 			<div class="maximize item" data-inverted="" data-tooltip="Maximize layout" data-position="left center">
 				<i class="maximize icon"></i>
 			</div>
-			<a class="item" data-inverted="" data-tooltip="Home" data-position="left center" href="{{ route('welcome', ['id' => $id]) }}">
+			<a class="item" data-inverted="" data-tooltip="Home" data-position="left center" href="{{ route('welcome', ['id' => $user->id]) }}">
 				<i class="home icon"></i>
 			</a>
 			<div class="search item" data-inverted="" data-tooltip="Search movie" data-position="left center">
@@ -360,7 +366,7 @@
 
 	$('.ui.search').search({
 		apiSettings: {
-			url: "{{ route('api.search.movie') }}" + '?key={query}&' + "{{ 'id=' . $id }}"
+			url: "{{ route('movies.search', ['id' => $user->id]) }}" + "?key={query}"
 		},
 		fields: {
 			results: 'items',

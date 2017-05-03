@@ -12,8 +12,8 @@ class TestController extends Controller
 {
     public function test()
     {
-    	$info = Movie::where('id', [1, 2, 3])->get();
-    	Debugbar::info(\App\User::$defaultAvatar);
+    	//$info = Movie::where('id', [1, 2, 3])->get();
+    	Debugbar::info(User::find(1)->movies);
     	return 'nihoa';
     }
 }

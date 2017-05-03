@@ -30,10 +30,10 @@
 <div class="movie content">
 	<div class="ui container">
 		<div class="movie-header">
-			<img class="ui small circular centered image" src="{{ url($user_avatar) }}">
+			<img class="ui small circular centered image" src="{{ url($user->avatar) }}">
 		</div>
-		<div class="ui horizontal divider">SilentGod's Movies</div>
-		<div class="ui centered raised card">
+		<div class="ui horizontal divider">{{ $user->name . "'s movies" }}</div>
+		<div class="ui centered raised link card">
 			<div class="image">
 				<img src="{{ url($movie->poster) }}">
 			</div>
@@ -89,7 +89,7 @@
 	</div>
 </div>
 <div class="movie-kit">
-	<a href="{{ route('movies.index', ['id' => $id]) }}">
+	<a href="{{ route('movies.index', ['id' => $user->id]) }}">
 		<i class="circular inverted red big home icon"></i>
 	</a>
 </div>
