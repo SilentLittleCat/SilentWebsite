@@ -35,9 +35,9 @@
 <div class="code content">
 	<div class="ui container">
 		<div class="code-header">
-			<img class="ui small circular centered image" src="{{ $user_avatar }}">
+			<img class="ui small circular centered image" src="{{ url($user->avatar) }}">
 		</div>
-		<div class="ui horizontal divider">SilentGod's Codes</div>
+		<div class="ui horizontal divider">{{ $user->name . "'s codes" }}</div>
 		<div class="ui raised code segment">
 			<h3 class="ui centered header">
 				{{ $code->header }}
@@ -48,7 +48,7 @@
 	</div>
 </div>
 <div class="code-kit">
-	<a href="{{ route('codes.index', ['id' => $id]) }}">
+	<a href="{{ route('codes.index', ['id' => $user->id]) }}">
 		<i class="circular inverted red big home icon"></i>
 	</a>
 </div>

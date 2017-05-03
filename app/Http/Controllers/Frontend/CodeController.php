@@ -18,14 +18,33 @@ class CodeController extends Controller
     public function index(Request $request, $id)
     {
         $info = array('user' => User::find($id));
-        $codes = Code::where('user_id', $id)->paginate(Code::$code_of_each_page);
+        $codes = Code::where('user_id', $id)->paginate(Code::$codes_of_each_page);
 
         if($codes->count() == 0)
         {
-            $codes = Code::where('user_id', $id)->paginate(Code::$code_of_each_page, ['*'], 'page', $codes->lastPage());
+            $codes = Code::where('user_id', $id)->paginate(Code::$codes_of_each_page, ['*'], 'page', $codes->lastPage());
         }
 
+        $allCodes = Code::where('user_id', $id)->get();
+        $categories = $allCodes->map(function($item, $key) {
+            return explode(",", $item->categories);
+        })->flatten()->toArray();
+        $categories = array_count_values($categories);
+        arsort($categories);
+
+        $reading_ranks = $allCodes->map(function($item, $key) {
+            return [
+                'id' => $item->id,
+                'header' => $item->header,
+                'reading_times' => $item->reading_times
+            ];
+        })->take(Code::$number_of_reading_ranks)->sortByDesc(function($item, $key) {
+            return $item['reading_times'];
+        });
+
         $info = array_merge(array('codes' => $codes), $info);
+        $info = array_merge(array('categories' => $categories), $info);
+        $info = array_merge(array('reading_ranks' => $reading_ranks), $info);
 
         if($request->has('style') && in_array($request->input('style'), Code::$display_styles))
         {
@@ -37,6 +56,7 @@ class CodeController extends Controller
         }
 
         return view('frontend.codes.index', $info);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -45,10 +65,11 @@ class CodeController extends Controller
      */
     public function create($id)
     {
-        $info = User::getUserInfo($id);
-        if($info['is_admin'])
+        if(Auth::user()->id == $id)
         {
-            return view('frontend.codes.create', $info);
+            return view('frontend.codes.create', [
+                'user' => User::find($id)
+            ]);
         }
         else
         {
@@ -65,6 +86,7 @@ class CodeController extends Controller
     public function store(Request $request, $id, $code_id)
     {
         $code = new Code;
+        $code->user_id = $id;
         $code->header = $request->header;
         $code->categories = $request->categories;
         $code->description = $request->description;
@@ -77,14 +99,8 @@ class CodeController extends Controller
         {
             return back()->withInput();
         }
-        $code_id = $code->id;
-        DB::transaction(function() use($id, $code_id){
-            DB::table('code_user')->insert([
-                'user_id' => $id,
-                'code_id' => $code_id
-            ]);
-        });
-        return redirect()->route('codes.show', ['id' => $id, 'code_id' => $code_id]);
+
+        return redirect()->route('codes.show', ['id' => $id, 'code_id' => $code->id]);
     }
 
     /**
@@ -95,12 +111,13 @@ class CodeController extends Controller
      */
     public function show($id, $code_id)
     {
-        $info = User::getUserInfo($id);
         $code = Code::where('id', $code_id)->first();
-        $code->content = Storage::get($code->content_path);
-        $info = array_merge(array('code' => $code), $info);
+        $code->content = Storage::get('public' . substr($code->content_path, 7));
 
-        return view('frontend.codes.show', $info);
+        return view('frontend.codes.show', [
+            'user' => User::find($id),
+            'code' => $code
+        ]);
     }
 
     /**
@@ -111,11 +128,10 @@ class CodeController extends Controller
      */
     public function edit($id)
     {
-        $info = User::getUserInfo($id);
-        $code = Code::where('id', $code_id)->get();
-        $code->content = Storage::get($code->content_path);
-        $info = array_merge(array('code' => $code), $info);
-        return view('frontend.codes.edit', $info);
+        return view('frontend.codes.edit', [
+            'user' => User::find($id),
+            'code' => Code::where('id', $code_id)->first()
+        ]);
     }
 
     /**
@@ -144,14 +160,8 @@ class CodeController extends Controller
         {
             return back()->withInput();
         }
-        $code_id = $code->id;
-        DB::transaction(function() use($id, $code_id){
-            DB::table('code_user')->insert([
-                'user_id' => $id,
-                'code_id' => $code_id
-            ]);
-        });
-        return redirect()->route('codes.show', ['id' => $id, 'code_id' => $code_id]);
+
+        return redirect()->route('codes.show', ['id' => $id, 'code_id' => $code->id]);
     }
 
     /**
@@ -168,11 +178,25 @@ class CodeController extends Controller
             Storage::delete('public' . substr($code->content_path, 7));
         }
 
-        DB::transaction(function() use($code_id) {
-            code::where('id', $code_id)->delete();
-            DB::table('code_user')->where('code_id', $code_id)->delete();
-        });
+        $code->delete();
 
-        return back();
+        return redirect()->route('codes.index', ['id' => $id]);
+    }
+
+    public function searchCode(Request $request, $id)
+    {
+        if(!$request->has('key'))
+        {
+            return response()->json(array(), 200);
+        }
+        
+        $codes = Code::select(['header', 'description'])->where('user_id', $id)->where('header', 'like', '%' . $request->key . '%')->get();
+
+        foreach($codes as $code)
+        {
+            $code->url = route('codes.show', ['id' => $id, 'code_id' => $code->id]);
+        }
+
+        return response()->json(array('items' => $codes), 200);
     }
 }

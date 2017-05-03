@@ -19,11 +19,11 @@ class MovieController extends Controller
     public function index(Request $request, $id)
     {
         $info = array('user' => User::find($id));
-        $movies = Movie::where('user_id', $id)->paginate(Movie::$movie_of_each_page);
+        $movies = Movie::where('user_id', $id)->paginate(Movie::$movies_of_each_page);
 
         if($movies->count() == 0)
         {
-            $movies = Movie::where('user_id', $id)->paginate(Movie::$movie_of_each_page, ['*'], 'page', $movies->lastPage());
+            $movies = Movie::where('user_id', $id)->paginate(Movie::$movies_of_each_page, ['*'], 'page', $movies->lastPage());
         }
 
         $info = array_merge(array('movies' => $movies), $info);
@@ -167,7 +167,7 @@ class MovieController extends Controller
             Storage::delete('public' . substr($movie->poster, 7));
         }
         $movie->delete();
-        return back();
+        return redirect()->route('movies.index', ['id' => $id]);
     }
 
     public function searchMovie(Request $request, $id)

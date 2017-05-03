@@ -3,7 +3,7 @@
 @section('style')
 <style type="text/css">
 	body {
-		background-image: url('../../storage/images/bg/movie-bg-2.gif');
+		background-image: url('../../image/bg/bg.jpg');
 		background-repeat: repeat-y;
 		background-size: 100%;
 		background-attachment: fixed;
@@ -95,10 +95,10 @@
 <div class="code-content">
 	<div class="ui container">
 		<div class="code-header">
-			<img class="ui small circular centered image" src="{{ $user_avatar }}">
+			<img class="ui small circular centered image" src="{{ url($user->avatar) }}">
 		</div>
 		<div class="ui segment">
-			<div class="ui horizontal title divider">SilentGod's codes</div>
+			<div class="ui horizontal title divider">{{ $user->name . "'s codes" }}</div>
 			@if($style == 'abstract')
 			<div class="ui relaxed list">
 				@foreach($codes as $code)
@@ -112,7 +112,7 @@
 							@elseif($code->type == 'translate')
 							<span class="ui horizontal red tag label">翻译</span>
 							@endif
-							<a href="{{ route('codes.show', ['id' => $id, 'code_id' => $code->id]) }}" class="ui header">
+							<a href="{{ route('codes.show', ['id' => $user->id, 'code_id' => $code->id]) }}" class="ui header">
 								<span>{{ $code->header }}</span>
 							</a>
 							<div class="sub header">
@@ -126,8 +126,8 @@
 						阅读（{{ $code->reading_times }}）
 						<i class="talk icon"></i>
 						评论（{{ $code->reading_times }}）
-						@if($is_admin)
-						<a href="{{ route('codes.edit', ['id' => $id, 'code_id' => $code->id]) }}">编辑</a>
+						@if(Auth::user()->id == $user->id)
+						<a href="{{ route('codes.edit', ['id' => $user->id, 'code_id' => $code->id]) }}">编辑</a>
 						<a>删除</a>
 						{!! Form::open(['url' => url()->current() . '/' . $code->id, 'method' => 'delete']) !!}
 							{{ Form::token() }}
@@ -151,7 +151,7 @@
 							@elseif($code->type == 'translate')
 							<span class="ui horizontal red tag label">翻译</span>
 							@endif
-							<a href="{{ route('codes.show', ['id' => $id, 'code_id' => $code->id]) }}" class="ui header">
+							<a href="{{ route('codes.show', ['id' => $user->id, 'code_id' => $code->id]) }}" class="ui header">
 								<span>{{ $code->header }}</span>
 							</a>
 							<span class="date">{{ $code->updated_at }}</span>
@@ -184,9 +184,9 @@
 <div class="ui left vertical inverted code sidebar menu">
 	<div class="header">
 		<div class="ui hidden divider"></div>
-		<img class="ui mini circular centered image" src="{{ $user_avatar }}">
+		<img class="ui mini circular centered image" src="{{ url($user->avatar) }}">
 		<div class="ui horizontal inverted divider">
-			{{ Auth::user()->email }}
+			{{ Auth::user()->name }}
 		</div>
 	</div>
 	<div class="item">
@@ -195,7 +195,7 @@
 			@foreach($categories as $key => $value)
 			<div class="item">
 				<div class="content">
-					<a href="{{ route('codes.index', ['id' => $id, 'category' => $key]) }}">{{ $key }}</a>
+					<a href="{{ route('codes.index', ['id' => $user->id, 'category' => $key]) }}">{{ $key }}</a>
 				</div>
 				<span>{{ '(' . $value . ')' }}</span>
 			</div>
@@ -224,18 +224,18 @@
 			<div class="go-up item" data-tooltip="Go to top!" data-inverted="" data-position="left center">
 				<i class="chevron up icon"></i>
 			</div>
-			@if($is_admin)
+			@if(Auth::user()->id == $user->id)
 			<div class="add item" data-inverted="" data-tooltip="Add your code" data-position="left center">
 				<i class="plus icon"></i>
 			</div>
 			@endif
-			<a class="abstract-layout {{ $style == 'abstract' ? 'link-diabled' : '' }} item" data-inverted="" data-tooltip="Abstract layout" data-position="left center" href="{{ route('codes.index', ['id' => $id, 'style' => 'abstract']) }}">
+			<a class="abstract-layout {{ $style == 'abstract' ? 'link-diabled' : '' }} item" data-inverted="" data-tooltip="Abstract layout" data-position="left center" href="{{ route('codes.index', ['id' => $user->id, 'style' => 'abstract']) }}">
 				<i class="indent icon"></i>
 			</a>
-			<a class="directory-layout {{ $style == 'directory' ? 'link-diabled' : '' }} item" data-inverted="" data-tooltip="Directory layout" data-position="left center" href="{{ route('codes.index', ['id' => $id, 'style' => 'directory']) }}">
+			<a class="directory-layout {{ $style == 'directory' ? 'link-diabled' : '' }} item" data-inverted="" data-tooltip="Directory layout" data-position="left center" href="{{ route('codes.index', ['id' => $user->id, 'style' => 'directory']) }}">
 				<i class="align justify icon"></i>
 			</a>
-			<a class="item" data-inverted="" data-tooltip="Home" data-position="left center" href="{{ route('welcome', ['id' => $id]) }}">
+			<a class="item" data-inverted="" data-tooltip="Home" data-position="left center" href="{{ route('welcome', ['id' => $user->id]) }}">
 				<i class="home icon"></i>
 			</a>
 			<div class="code-menu item" data-inverted="" data-tooltip="Menu" data-position="left center">
@@ -267,11 +267,11 @@
 
 	$('.ui.search').search({
 		apiSettings: {
-			url: "{{ route('api.search.code') }}" + '?key={query}&' + "{{ 'id=' . $id }}"
+			url: "{{ route('codes.search', ['id' => $user->id]) }}" + '?key={query}&' + "{{ 'id=' . $user->id }}"
 		},
 		fields: {
 			results: 'items',
-			title: 'name',
+			title: 'header',
 			url: 'url'
 		},
 		minCharacters: 3,
@@ -281,7 +281,10 @@
 	});
 
 	$('.ui.code-search.dimmer').on('click', '.ui.search', function(event) {
-		event.stopPropagation();
+		event.stopImmediatePropagation();
+		console.log('1');
+	}).on('click', function(event) {
+		$('.ui.code-search.dimmer').dimmer('hide');
 	});
 </script>
 @endsection

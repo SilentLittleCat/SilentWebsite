@@ -12,7 +12,7 @@ class Movie extends Model
         'user_id', 'name', 'director', 'actors', 'poster', 'description', 'recommend', 'ranking', 'stars'
     ];
 
-    public static $movie_of_each_page = 5;
+    public static $movies_of_each_page = 5;
 
     public static $display_styles = ['grid', 'list'];
     public static $default_display_style = 'grid';
