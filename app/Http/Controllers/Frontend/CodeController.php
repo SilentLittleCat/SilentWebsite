@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Code;
 use App\User;
-use DB, Storage, Debugbar;
+use DB, Storage, Debugbar, Auth;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Query\Builder;
 
 class CodeController extends Controller
 {
@@ -18,14 +20,31 @@ class CodeController extends Controller
     public function index(Request $request, $id)
     {
         $info = array('user' => User::find($id));
-        $codes = Code::where('user_id', $id)->paginate(Code::$codes_of_each_page);
+        $allCodes = Code::where('user_id', $id)->get();
+        $path = route('codes.index', ['id' => $id]);
+        $page = (is_int($request->page) && $request->page > 0) ? $request->page : 1;
+        $codes = $allCodes->each(function($item, $key) {
+            $categories_array = explode(',', $item->categories);
+            asort($categories_array);
+            $item->categories_array = $categories_array;
+            return $item;
+        });
 
-        if($codes->count() == 0)
+        if($request->has('category'))
         {
-            $codes = Code::where('user_id', $id)->paginate(Code::$codes_of_each_page, ['*'], 'page', $codes->lastPage());
+            $category = $request->category;
+            $codes = $codes->filter(function($item, $key) use($category) {
+                return in_array($category, explode(',', $item->categories));
+            });
+            $path = route('codes.index', ['id' => $id, 'category' => $category]);
         }
 
-        $allCodes = Code::where('user_id', $id)->get();
+        $total = $codes->count();
+        $codes = $codes->forPage($page, Code::$codes_of_each_page);
+
+        $codes = new LengthAwarePaginator($codes, $total, Code::$codes_of_each_page, $page, ['path' => $path]);
+        $codes1 = Code::where('user_id', $id)->paginate(Code::$codes_of_each_page); 
+
         $categories = $allCodes->map(function($item, $key) {
             return explode(",", $item->categories);
         })->flatten()->toArray();
@@ -83,14 +102,17 @@ class CodeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $id, $code_id)
+    public function store(Request $request, $id)
     {
         $code = new Code;
         $code->user_id = $id;
         $code->header = $request->header;
+        $code->type = $request->type;
         $code->categories = $request->categories;
         $code->description = $request->description;
-        $path = Code::$code_content_path . time() . str_random(8) . '.txt';
+        $code->reading_times = 0;
+        $path = Code::$content_path . time() . str_random(8) . '.txt';
+
         if(Storage::put($path, $request->content))
         {
             $code->content_path = $path;
@@ -112,7 +134,14 @@ class CodeController extends Controller
     public function show($id, $code_id)
     {
         $code = Code::where('id', $code_id)->first();
-        $code->content = Storage::get('public' . substr($code->content_path, 7));
+        if($code->content_path == Code::$default_content_path)
+        {
+            $code->content = Storage::get('public' . substr($code->content_path, 7));
+        }
+        else if(Storage::exists($code->content_path))
+        {
+            $code->content = Storage::get($code->content_path);
+        }
 
         return view('frontend.codes.show', [
             'user' => User::find($id),
@@ -126,11 +155,13 @@ class CodeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id, $code_id)
     {
+        $code = Code::where('id', $code_id)->first();
+        $code->content = Storage::get('public' . substr($code->content_path, 7));
         return view('frontend.codes.edit', [
             'user' => User::find($id),
-            'code' => Code::where('id', $code_id)->first()
+            'code' => $code
         ]);
     }
 
@@ -173,7 +204,7 @@ class CodeController extends Controller
     public function destroy($id, $code_id)
     {
         $code = Code::where('id', $code_id)->first();
-        if(!is_null($code->content_path) && Storage::exists('public' . substr($code->content_path, 7)))
+        if(!is_null($code->content_path) && Storage::exists('public' . substr($code->content_path, 7)) && $code->content_path != Code::$default_content_path);
         {
             Storage::delete('public' . substr($code->content_path, 7));
         }

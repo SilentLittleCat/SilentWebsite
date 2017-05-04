@@ -19,4 +19,5 @@ class Movie extends Model
 
     public static $poster_path = 'public/image/movie';
     public static $poster_extension = ['jpeg', 'jpg', 'png'];
+    public static $default_movie_poster = 'image/movie/no-poster.jpg';
 }

@@ -47,7 +47,7 @@
 
 		<h2 class="ui center aligned code header">
 			<i class="code icon"></i>
-			Add your code
+			Edit your code
 		</h2>
 
 		<div class="ui code divider"></div>
@@ -58,35 +58,37 @@
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Header:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<input type="text" name="header" placeholder="Input the code header">
+				<input type="text" name="header" placeholder="Input the code header" value="{{ $code->header }}">
 			</div>
 		</div>
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Type:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<select class="ui dropdown" name="type">
-					<option value="original" selected="selected">原创</option>
-					<option value="transport">转载</option>
-					<option value="translate">翻译</option>
+				<select class="ui compact dropdown" name="type">
+					<option value="原创" selected="selected">原创</option>
+					<option value="转载">转载</option>
+					<option value="翻译">翻译</option>
 				</select>
 			</div>
 		</div>
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Categories:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<input id="categories" type="text" name="categories" placeholder="Input the code's categories, divide them with ,">
+				<input id="categories" type="text" name="categories" placeholder="Input the code's categories, divide them with ," value="{{ $code->header }}">
 			</div>
 		</div>
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Description:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<textarea rows="3" name="description" placeholder="Input a code description"></textarea>
+				<textarea rows="3" name="description" placeholder="Input a code description">{{ $code->description }}</textarea>
 			</div>
 		</div>
 		<div class="row field">
 			<label class="right floated right aligned two wide column">Content:</label>
 			<div class="left floated left aligned fourteen wide column">
-				<script id="container" name="content" type="text/plain"></script>
+				<script id="container" name="content" type="text/plain">
+					{{ $code->content }}
+				</script>
 			</div>
 		</div>
 		<div class="row field">

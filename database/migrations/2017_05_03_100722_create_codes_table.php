@@ -21,7 +21,7 @@ class CreateCodesTable extends Migration
             $table->string('type');
             $table->string('categories')->nullable();
             $table->string('description')->nullable();
-            $table->integer('reading_times');
+            $table->integer('reading_times')->default(0);
             $table->timestamps();
         });
     }

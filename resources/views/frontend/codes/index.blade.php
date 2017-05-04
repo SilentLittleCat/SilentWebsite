@@ -12,6 +12,7 @@
 		background-color: rgba(200, 200, 200, 0.4);
 		margin: 0px;
 		padding: 0px;
+		bottom: 20px;
 	}
 	.code-content .ui.container {
 		padding: 20px 0px;
@@ -88,6 +89,9 @@
 	.ui.code.sidebar .item .menu .item a:hover {
 		color: white;
 	}
+	.ui.header .ui.labels {
+		margin-top: 10px;
+	}
 </style>
 @endsection
 
@@ -99,8 +103,14 @@
 		</div>
 		<div class="ui segment">
 			<div class="ui horizontal title divider">{{ $user->name . "'s codes" }}</div>
-			@if($style == 'abstract')
-			<div class="ui relaxed list">
+			@if($codes->count() == 0)
+			<div class="ui negative message">
+				<div class="header">
+					What you find is empty!
+				</div>
+			</div>
+			@elseif($style == 'abstract')
+			<div class="ui relaxed abstract list">
 				@foreach($codes as $code)
 				<div class="item">
 					<div class="content">
@@ -115,6 +125,13 @@
 							<a href="{{ route('codes.show', ['id' => $user->id, 'code_id' => $code->id]) }}" class="ui header">
 								<span>{{ $code->header }}</span>
 							</a>
+							<div class="ui labels">
+								@foreach($code->categories_array as $item)
+								<div class="ui label">
+									{{ $item }}
+								</div>
+								@endforeach
+							</div>
 							<div class="sub header">
 								{{ $code->description }}
 							</div>
@@ -128,7 +145,7 @@
 						评论（{{ $code->reading_times }}）
 						@if(Auth::user()->id == $user->id)
 						<a href="{{ route('codes.edit', ['id' => $user->id, 'code_id' => $code->id]) }}">编辑</a>
-						<a>删除</a>
+						<a class="delete-code" data-header="{{ $code->header }}">删除</a>
 						{!! Form::open(['url' => url()->current() . '/' . $code->id, 'method' => 'delete']) !!}
 							{{ Form::token() }}
 						{!! Form::close() !!}
@@ -181,6 +198,14 @@
 	</div>
 </div>
 
+<div class="ui delete-code modal">
+	<div class="header"></div>
+	<div class="actions">
+		<div class="ui blue approve button">OK</div>
+		<div class="ui black cancel button">Cancel</div>
+	</div>
+</div>
+
 <div class="ui left vertical inverted code sidebar menu">
 	<div class="header">
 		<div class="ui hidden divider"></div>
@@ -208,7 +233,7 @@
 			@foreach($reading_ranks as $item)
 			<div class="item">
 				<div class="content">
-					<a href="">{{ $item['header'] }}</a>
+					<a href="{{ route('codes.show', ['id' => $user->id, 'code_id' => $item['id']]) }}">{{ $item['header'] }}</a>
 				</div>
 				<span>{{ '(' . $item['reading_times'] . ')' }}</span>
 			</div>
@@ -285,6 +310,16 @@
 		console.log('1');
 	}).on('click', function(event) {
 		$('.ui.code-search.dimmer').dimmer('hide');
+	});
+
+	$('.ui.abstract.list').on('click', '.delete-code', function() {
+		$('.ui.delete-code.modal .header').text('你确定要删除《' + $(event.target).attr('data-header') + '》?');
+		$form = $(event.target).next();
+		$('.ui.delete-code.modal').modal({
+			onApprove: function() {
+				$form.submit();
+			}
+		}).modal('show');
 	});
 </script>
 @endsection

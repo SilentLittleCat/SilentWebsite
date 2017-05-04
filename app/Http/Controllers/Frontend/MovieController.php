@@ -162,7 +162,7 @@ class MovieController extends Controller
     public function destroy($id, $movie_id)
     {
         $movie = Movie::where('id', $movie_id)->first();
-        if(!is_null($movie->poster) && Storage::exists('public' . substr($movie->poster, 7)))
+        if(!is_null($movie->poster) && $movie->poster != Movie::$default_movie_poster && Storage::exists('public' . substr($movie->poster, 7)))
         {
             Storage::delete('public' . substr($movie->poster, 7));
         }
