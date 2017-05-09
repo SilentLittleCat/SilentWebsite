@@ -47,7 +47,7 @@ class MovieController extends Controller
      */
     public function create(Request $request, $id)
     {
-        if(Auth::user()->id == $id)
+        if(Auth::check() && Auth::user()->id == $id)
         {
             return view('frontend.movies.create', [
                 'user' => User::find($id)

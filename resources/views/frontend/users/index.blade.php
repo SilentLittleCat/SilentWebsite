@@ -4,7 +4,7 @@
 	.ui.segment {
 		margin: 0px;
 		border-radius: 0px;
-		padding-top: 38px;
+		padding-top: 88px;
 	}
 	.ui.text.shape .side {
 		margin-top: 1em;

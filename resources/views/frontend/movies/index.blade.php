@@ -9,8 +9,9 @@
 		background-attachment: fixed;
 	}
 	.movie-content {
-		background-color: rgba(200, 200, 200, 0.4);
+		padding-top: 80px;
 		padding-bottom: 30px;
+		background-color: rgba(150, 150, 150, 0.4);
 	}
 	.movie-content .ui.container {
 		padding: 20px 0px;
@@ -80,7 +81,7 @@
 				<div class="card">
 					<div class="blurring dimmable image">
 						<div class="ui dimmer">
-							@if(Auth::user()->id == $user->id)
+							@if(Auth::check() && Auth::user()->id == $user->id)
 							<div class="content">
 								<div class="center">
 									<div class="ui inverted edit button">
@@ -181,7 +182,7 @@
 						<th>Actors</th>
 						<th>Ranking</th>
 						<th>Stars</th>
-						@if(Auth::user()->id == $user->id)
+						@if(Auth::check() && Auth::user()->id == $user->id)
 						<th>Operation</th>
 						@endif
 					</tr>
@@ -197,7 +198,7 @@
 							<td>{{ $movie->actors }}</td>
 							<td>{{ $movie->ranking }}</td>
 							<td>{{ $movie->stars }}</td>
-							@if(Auth::user()->id == $user->id)
+							@if(Auth::check() && Auth::user()->id == $user->id)
 							<td>
 								<a href="{{ route('movies.edit', ['id' => $user->id, 'movie_id' => $movie->id]) }}">Edit</a>
 								<span>|</span>
@@ -281,7 +282,7 @@
 			<div class="go-up item" data-tooltip="Go to top!" data-inverted="" data-position="left center">
 				<i class="chevron up icon"></i>
 			</div>
-			@if(Auth::user()->id == $user->id)
+			@if(Auth::check() && Auth::user()->id == $user->id)
 			<div class="add item" data-inverted="" data-tooltip="Add your movie" data-position="left center">
 				<i class="plus icon"></i>
 			</div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Code;
+use App\Models\Comment;
 use App\User;
 use DB, Storage, Debugbar, Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -143,9 +144,12 @@ class CodeController extends Controller
             $code->content = Storage::get($code->content_path);
         }
 
+        $comments = Comment::getComments('code', $code_id);
+
         return view('frontend.codes.show', [
             'user' => User::find($id),
-            'code' => $code
+            'code' => $code,
+            'comments' => $comments
         ]);
     }
 
@@ -221,7 +225,7 @@ class CodeController extends Controller
             return response()->json(array(), 200);
         }
         
-        $codes = Code::select(['header', 'description'])->where('user_id', $id)->where('header', 'like', '%' . $request->key . '%')->get();
+        $codes = Code::select(['id', 'header', 'description'])->where('user_id', $id)->where('header', 'like', '%' . $request->key . '%')->get();
 
         foreach($codes as $code)
         {

@@ -9,9 +9,8 @@
 		background-attachment: fixed;
 	}
 	.code-content {
-		background-color: rgba(200, 200, 200, 0.4);
 		margin: 0px;
-		padding: 0px;
+		padding: 50px 0px 0px 0px;
 		bottom: 20px;
 	}
 	.code-content .ui.container {
@@ -96,7 +95,7 @@
 @endsection
 
 @section('content')
-<div class="code-content">
+<div class="code-content" id="code-content">
 	<div class="ui container">
 		<div class="code-header">
 			<img class="ui small circular centered image" src="{{ url($user->avatar) }}">
@@ -143,7 +142,7 @@
 						阅读（{{ $code->reading_times }}）
 						<i class="talk icon"></i>
 						评论（{{ $code->reading_times }}）
-						@if(Auth::user()->id == $user->id)
+						@if(Auth::check() and Auth::user()->id == $user->id)
 						<a href="{{ route('codes.edit', ['id' => $user->id, 'code_id' => $code->id]) }}">编辑</a>
 						<a class="delete-code" data-header="{{ $code->header }}">删除</a>
 						{!! Form::open(['url' => url()->current() . '/' . $code->id, 'method' => 'delete']) !!}
@@ -211,7 +210,7 @@
 		<div class="ui hidden divider"></div>
 		<img class="ui mini circular centered image" src="{{ url($user->avatar) }}">
 		<div class="ui horizontal inverted divider">
-			{{ Auth::user()->name }}
+			{{ $user->name }}
 		</div>
 	</div>
 	<div class="item">
@@ -249,7 +248,7 @@
 			<div class="go-up item" data-tooltip="Go to top!" data-inverted="" data-position="left center">
 				<i class="chevron up icon"></i>
 			</div>
-			@if(Auth::user()->id == $user->id)
+			@if(Auth::check() and Auth::user()->id == $user->id)
 			<div class="add item" data-inverted="" data-tooltip="Add your code" data-position="left center">
 				<i class="plus icon"></i>
 			</div>

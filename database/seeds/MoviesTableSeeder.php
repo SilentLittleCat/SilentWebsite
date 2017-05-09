@@ -23,7 +23,7 @@ class MoviesTableSeeder extends Seeder
         {
         	for($i = 0; $i < 20; ++$i)
         	{
-	            $movie = Movie::create([
+	            Movie::create([
                     'user_id' => $user->id,
 	                'name'   => $faker->text(30),
 	                'director' => $faker->name,

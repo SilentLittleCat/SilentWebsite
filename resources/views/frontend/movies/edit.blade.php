@@ -4,9 +4,8 @@
 <style type="text/css">
 	.create-movie
 	{
-		padding-top: 50px;
-		margin-bottom: 100px;
-		padding: 50px 50px;
+		margin-bottom: 150px;
+		padding: 100px 50px;
 	}
 	.create-movie .ui.segment {
 		padding: 0px 50px 50px 50px;

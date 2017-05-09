@@ -28,9 +28,9 @@ class UsersTableSeeder extends Seeder
 
         $faker = Faker\Factory::create('zh_CN');
 
-        for ($i = 0; $i < 20; ++$i) {
-        	$avatar = env('DEFAULT_AVATAR_PATH') . 'avatar' . rand(1, 6) . '.png';
-        	$avatar_back = env('DEFAULT_AVATAR_PATH') . 'avatar' . rand(1, 6) . '.png';
+        for ($i = 0; $i < 10; ++$i) {
+        	$avatar = env('DEFAULT_AVATAR_PATH') . 'avatar' . $faker->numberBetween(1, 6) . '.png';
+        	$avatar_back = env('DEFAULT_AVATAR_PATH') . 'avatar' . $faker->numberBetween(1, 6) . '.png';
             $user = User::create([
                 'name'   => $faker->name,
                 'email' => $faker->email,

@@ -3,7 +3,8 @@
 @section('style')
 <style type="text/css">
 	.movie.content .ui.container {
-		margin-top: 20px;
+		margin-top: 0px;
+		padding-top: 100px;
 		margin-bottom: 100px;
 	}
 	.movie.content .ui.divider {

@@ -2,7 +2,7 @@
 @section('style')
 <style type="text/css">
     .masthead h2.ui.header {
-        margin-top: 33px;
+        margin-top: 58px;
         font-size: 2em;
         text-align: center;
         font-style: italic;

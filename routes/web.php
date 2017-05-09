@@ -30,7 +30,9 @@ Route::group(['namespace' => 'Frontend'], function ()
     	
         Route::resource('/codes', 'CodeController');
         Route::get('/search-code', ['as' => 'codes.search', 'uses' => 'CodeController@searchCode']);
-    }); 
+    });
+
+    Route::post('/comments/replies', ['as' => 'comments.replies', 'uses' => 'CommentController@getCommentReplies']);
 });
 
 Route::get('/test', 'TestController@test');

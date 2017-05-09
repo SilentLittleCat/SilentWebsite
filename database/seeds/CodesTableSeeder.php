@@ -23,7 +23,7 @@ class CodesTableSeeder extends Seeder
         {
         	for($i = 0; $i < 20; ++$i)
         	{
-	            $movie = Code::create([
+	            Code::create([
 	            	'user_id' => $user->id,
 	        		'header' => $faker->text(50),
 	        		'content_path' => Code::$default_content_path,
