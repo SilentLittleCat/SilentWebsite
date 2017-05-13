@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Frontend;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class VideoController extends Controller
 {
@@ -11,9 +12,14 @@ class VideoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, $id)
     {
-        //
+        return view('frontend.videos.index', ['id' => $id]);
+    }
+
+    public function home()
+    {
+        return view('frontend.videos.home');
     }
 
     /**

@@ -30,6 +30,9 @@ mix.copy('resources/assets/bower/cropperjs/dist/cropper.css', 'public/bower/crop
 // jquery.scrollTo
 mix.copy('resources/assets/bower/jquery.scrollTo/jquery.scrollTo.js', 'public/bower/jquery.scrollTo/jquery.scrollTo.js');
 
+// Snap.svg
+mix.copy('resources/assets/bower/Snap.svg/dist/snap.svg.js', 'public/bower/Snap.svg/dist/snap.svg.js');
+
 mix.browserSync({
     open: 'external',
     host: 'silent.website',

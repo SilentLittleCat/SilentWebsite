@@ -4,7 +4,7 @@
     <!-- Standard Meta -->
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -90,6 +90,7 @@
     <script src="{{ asset('bower/semantic/dist/semantic.js') }}"></script>
     <script src="{{ asset('bower/jquery.scrollTo/jquery.scrollTo.js') }}"></script>
     <script src="{{ asset('bower/cropperjs/dist/cropper.js') }}"></script>
+    <script src="{{ asset('bower/Snap.svg/dist/snap.svg.js') }}"></script>
     <script type="text/javascript">
         $(function() {
             $('.ui.dropdown').dropdown({

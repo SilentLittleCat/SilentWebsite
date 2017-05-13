@@ -16,6 +16,6 @@ class TestController extends Controller
         $info = route('codes.show', ['id' => 1, 'code_id' => 5]);
         Debugbar::info($info);
 
-    	return 'nihoa';
+    	return view('test.index');
     }
 }
