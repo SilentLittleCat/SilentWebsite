@@ -33,6 +33,8 @@ Route::group(['namespace' => 'Frontend'], function ()
 
         Route::get('/videos', ['as' => 'videos.index', 'uses' => 'VideoController@index']);
         Route::get('/videos/home', ['as' => 'videos.home', 'uses' => 'VideoController@home']);
+
+        Route::get('/music', ['as' => 'music.index', 'uses' => 'MusicController@index']);
     });
 
     Route::post('/comments/replies', ['as' => 'comments.replies', 'uses' => 'CommentController@getCommentReplies']);

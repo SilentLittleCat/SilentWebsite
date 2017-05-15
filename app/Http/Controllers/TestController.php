@@ -13,9 +13,10 @@ class TestController extends Controller
 {
     public function test()
     {
-        $info = route('codes.show', ['id' => 1, 'code_id' => 5]);
-        Debugbar::info($info);
-
+        $info = file_get_contents(storage_path('app/public/music/songs.json'));
+        $json_info = json_decode($info, TRUE);
+        Debugbar::info($json_info['songs']);
+        return 'nihao';
     	return view('test.index');
     }
 }
