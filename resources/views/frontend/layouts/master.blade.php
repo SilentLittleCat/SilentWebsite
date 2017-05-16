@@ -91,6 +91,7 @@
     <script src="{{ asset('bower/jquery.scrollTo/jquery.scrollTo.js') }}"></script>
     <script src="{{ asset('bower/cropperjs/dist/cropper.js') }}"></script>
     <script src="{{ asset('bower/Snap.svg/dist/snap.svg.js') }}"></script>
+    <script src="{{ asset('bower/flat-surface-shader/deploy/fss.js') }}"></script>
     <script type="text/javascript">
         $(function() {
             $('.ui.dropdown').dropdown({

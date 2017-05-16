@@ -33,6 +33,8 @@ mix.copy('resources/assets/bower/jquery.scrollTo/jquery.scrollTo.js', 'public/bo
 // Snap.svg
 mix.copy('resources/assets/bower/Snap.svg/dist/snap.svg.js', 'public/bower/Snap.svg/dist/snap.svg.js');
 
+mix.copy('resources/assets/bower/flat-surface-shader/deploy/fss.js', 'public/bower/flat-surface-shader/deploy/fss.js');
+
 mix.browserSync({
     open: 'external',
     host: 'silent.website',

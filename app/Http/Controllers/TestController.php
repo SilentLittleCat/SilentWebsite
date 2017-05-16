@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use App\User;
 use App\Models\Movie;
 use App\Models\Comment;
@@ -13,9 +14,9 @@ class TestController extends Controller
 {
     public function test()
     {
-        $info = file_get_contents(storage_path('app/public/music/songs.json'));
-        $json_info = json_decode($info, TRUE);
-        Debugbar::info($json_info['songs']);
+        $movies = Movie::select(['id', 'name'])->where('user_id', Auth::user()->id)->get();
+        $info = view('home.movie.manage', ['movies' => $movies, 'user' => Auth::user()])->render();
+        Debugbar::info($info);
         return 'nihao';
     	return view('test.index');
     }

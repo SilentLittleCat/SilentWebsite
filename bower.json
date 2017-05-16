@@ -19,6 +19,7 @@
     "semantic": "semantic-ui#^2.2.10",
     "jquery.scrollTo": "^2.1.2",
     "cropperjs": "^0.8.1",
-    "Snap.svg": "snap.svg#^0.5.1"
+    "Snap.svg": "snap.svg#^0.5.1",
+    "flat-surface-shader": "*"
   }
 }
