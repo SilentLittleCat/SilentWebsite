@@ -1,6 +1,7 @@
 @extends('frontend.layouts.master')
 @section('style')
 <style type="text/css">
+
     .masthead h2.ui.header {
         margin-top: 58px;
         font-size: 2em;
