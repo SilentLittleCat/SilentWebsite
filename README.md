@@ -1,6 +1,6 @@
 <p align="center"><img src="http://img2.ph.126.net/q0D2Qv2ogepx8OatALko_g==/6632460846931957190.png"></p>
 
-# About SilentWebsite
+## About SilentWebsite
 
 A personal website system based on Larave
 l5.4 and semantic-ui, where you can write blog, share the movies, music, videos you like.
